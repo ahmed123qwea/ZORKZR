@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة منبثقة</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://www.solarsystemscope.com/textures/download/8k_stars_milky_way.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+        .menu {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+            z-index: 2;
+        }
+        .menu-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+        .menu-content a {
+            color: white;
+            padding: 16px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 18px;
+            transition: background 0.3s ease;
+        }
+        .menu-content a:hover {
+            background-color: #555;
+        }
+        .dots {
+            cursor: pointer;
+            font-size: 30px;
+            color: white;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+        .dots:hover {
+            transform: rotate(90deg);
+        }
+        .center-link {
+            margin-top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 1);
+            padding: 15px 30px;
+            border-radius: 10px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            z-index: 2;
+            text-decoration: none; /* Ensure the text is not underlined */
+            color: white; /* Ensure the text is white */
+        }
+        .center-link:hover {
+            background-color: rgba(0, 0, 0, 1);
+            transform: scale(1.05);
+        }
+        .arrow {
+            margin-left: 10px;
+            font-size: 24px;
+        }
+        #paragraph {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: textFadeIn 2s ease-in;
+            z-index: 2;
+        }
+        @keyframes textFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.3);
+        }
+        .falling-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .star {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 2px;
+            background: white;
+            opacity: 0.8;
+            animation: fall 5s linear infinite;
+        }
+        @keyframes fall {
+            from {
+                transform: translateY(-200px);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffcc00, #ff9900);
+            box-shadow: 0 0 50px rgba(255, 153, 0, 0.5);
+            animation: rotate 60s infinite linear;
+        }
+        .planet1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 20%;
+        }
+        .planet2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 70%;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <div class="dots">•••</div>
+    <div class="menu-content">
+        <a href="https://www.tiktok.com/@zrzork2?_t=8n8yuF25tTE&_r=1" target="_blank">تيك توك</a>
+        <a href="#" id="color-option" onclick="toggleColor()">تغيير لون الصفحة</a>
+        <a href="#" id="language-option" onclick="toggleLanguage()">تغيير اللغة</a>
+    </div>
+</div>
+
+<p id="paragraph" class="glow">مرحباً بكم في صفحتنا</p>
+
+<a href="https://t.me/ZRZORK2" class="center-link">
+    للدخول إلى سيرفر ZORK <span class="arrow">➡️</span>
+</a>
+
+<div class="falling-stars" id="falling-stars"></div>
+<div class="planet planet1"></div>
+<div class="planet planet2"></div>
+
+<script>
+    const texts = {
+        ar: {
+            "language-option": "تغيير اللغة",
+            "paragraph": "مرحباً بكم في صفحتنا",
+            "color-option": "تغيير لون الصفحة",
+            "tiktok-option": "تيك توك",
+            "center-link": "للدخول إلى سيرفر ZORK"
+        },
+        en: {
+            "language-option": "Change Language",
+            "paragraph": "Welcome to our page",
+            "color-option": "Change Page Color",
+            "tiktok-option": "TikTok",
+            "center-link": "Enter ZORK Server"
+        }
+    };
+
+    function toggleLanguage() {
+        const currentLang = document.documentElement.lang;
+        const newLang = currentLang === "ar" ? "en" : "ar";
+        document.documentElement.lang = newLang;
+
+        document.getElementById('language-option').innerText = texts[newLang]['language-option'];
+        document.getElementById('paragraph').innerText = texts[newLang]['paragraph'];
+        document.getElementById('color-option').innerText = texts[newLang]['color-option'];
+        document.querySelector('.menu-content a:nth-child(1)').innerText = texts[newLang]['tiktok-option'];
+        document.querySelector('.center-link').innerText = texts[newLang]['center-link'];
+    }
+
+    function toggleColor() {
+        const currentColor = document.body.style.backgroundColor;
+        document.body.style.backgroundColor = currentColor === 'black' ? 'white' : 'black';
+        document.body.style.color = currentColor === 'black' ? 'black' : 'white';
+    }
+
+    document.querySelector('.dots').addEventListener('click', function() {
+        const menuContent = document.querySelector('.menu-content');
+        menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
+    });
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dots')) {
+            const menuContent = document.querySelector('.menu-content');
+            if (menuContent.style.display === 'block') {
+                menuContent.style.display = 'none';
+            }
+        }
+    };
+
+    function createFallingStars() {
+        const starContainer = document.getElementById('falling-stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = Math.random() * 2 + 3 + 's';
+            starContainer.appendChild(star);
+        }
+    }
+
+    createFallingStars();
+</script>
+
+</body>
+</html>
